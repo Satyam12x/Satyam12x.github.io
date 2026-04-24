@@ -31,6 +31,7 @@ type Project = {
   liveLabel?: string;
   githubUrl: string;
   image: string;
+  npmPackage?: string;
 };
 
 const TECH_MAP: Record<
@@ -119,6 +120,7 @@ const projects: Project[] = [
     liveLabel: "View on npm",
     githubUrl: "https://github.com/Satyam12x/req-log",
     image: "/projects/BackendLogger.png",
+    npmPackage: "backend-logger",
   },
 ];
 
@@ -128,6 +130,24 @@ export default function Projects() {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [imgErrors, setImgErrors] = useState<Set<string>>(new Set());
+  const [npmDownloads, setNpmDownloads] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const packages = projects.filter((p) => p.npmPackage).map((p) => p.npmPackage!);
+    packages.forEach(async (pkg) => {
+      try {
+        const res = await fetch(
+          `https://api.npmjs.org/downloads/point/2000-01-01:${new Date().toISOString().slice(0, 10)}/${pkg}`
+        );
+        const data = await res.json();
+        if (typeof data.downloads === "number") {
+          setNpmDownloads((prev) => ({ ...prev, [pkg]: data.downloads }));
+        }
+      } catch {
+        // silently fail — badge just won't show
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -268,6 +288,16 @@ export default function Projects() {
                           })}
                         </div>
                       </div>
+
+                      {project.npmPackage && npmDownloads[project.npmPackage] !== undefined && (
+                        <div className="mt-5 inline-flex items-center gap-1.5 text-[12px] text-charcoal/50 font-medium">
+                          <SiNpm size={14} style={{ color: "#CB3837" }} />
+                          <span className="tabular-nums font-semibold text-charcoal/70">
+                            {npmDownloads[project.npmPackage].toLocaleString()}
+                          </span>
+                          <span>total downloads</span>
+                        </div>
+                      )}
 
                       <div className="mt-8 flex items-center gap-6 flex-wrap">
                         <a
