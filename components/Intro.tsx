@@ -11,7 +11,7 @@ function timeGreeting() {
 }
 
 const BASE = ["Hey", "Hello", "Hola", "Bonjour", "नमस्ते", "こんにちは"];
-const WORD_MS = 520;
+const WORD_MS = 600;
 const EXIT_MS = 900;
 
 export default function Intro({ onDone }: { onDone: () => void }) {
@@ -42,7 +42,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
           key={i}
           className="absolute text-4xl md:text-5xl lg:text-6xl font-semibold text-white tracking-tight select-none"
           style={{
-            animation: `sp-word ${WORD_MS}ms cubic-bezier(0.16, 1, 0.3, 1) both`,
+            animation: `sp-word ${WORD_MS}ms linear both`,
             animationDelay: `${i * WORD_MS}ms`,
             willChange: "opacity, transform",
           }}
