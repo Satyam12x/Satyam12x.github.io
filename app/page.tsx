@@ -5,12 +5,10 @@ import Achievements from "@/components/Achievements";
 import Stack from "@/components/Stack";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
-import IntroWrapper from "@/components/IntroWrapper";
 
 export default function Home() {
   return (
     <main className="relative">
-      <IntroWrapper />
       <Navbar />
       <Hero />
       <Experience />
