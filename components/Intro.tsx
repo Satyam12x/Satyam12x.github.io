@@ -21,9 +21,17 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
+    document.body.style.overflow = "hidden";
     const t1 = setTimeout(() => setExiting(true), exitAt);
-    const t2 = setTimeout(onDone, exitAt + EXIT_MS);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    const t2 = setTimeout(() => {
+      document.body.style.overflow = "";
+      onDone();
+    }, exitAt + EXIT_MS);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      document.body.style.overflow = "";
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -42,8 +50,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
           key={i}
           className="absolute text-4xl md:text-5xl lg:text-6xl font-semibold text-white tracking-tight select-none"
           style={{
-            animation: `sp-word ${WORD_MS}ms linear both`,
-            animationDelay: `${i * WORD_MS}ms`,
+            animation: `sp-word ${WORD_MS}ms linear ${i * WORD_MS}ms both`,
             willChange: "opacity, transform",
           }}
         >
